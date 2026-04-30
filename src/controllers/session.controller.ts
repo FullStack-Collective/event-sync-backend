@@ -57,7 +57,11 @@ export const sessionController = {
    * Modifier une session (admin uniquement)
    */
   update: async (req: Request, res: Response) => {
-    const session = await sessionService.update(parseInt(req.params.id), req.body);
+    const id = req.params.id;
+    if (id !== 'string') {
+        throw new Error('ID invalide');
+    }
+    const session = await sessionService.update(parseInt(id), req.body);
     res.json({ data: session });
   },
   
