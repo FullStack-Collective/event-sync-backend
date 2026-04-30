@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime @map("start_date")
+  endDate     DateTime @map("end_date")
+  location    String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  sessions Session[]
+
+  @@map("events")
+}
+
+model Room {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  capacity Int?
+
+  sessions Session[]
+
+  @@map("rooms")
+}
+
+model Session {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  startTime   DateTime @map("start_time")
+  endTime     DateTime @map("end_time")
+  eventId     Int      @map("event_id")
+  roomId      Int      @map("room_id")
+
+  event     Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  room      Room             @relation(fields: [roomId], references: [id])
+  speakers  SessionSpeaker[]
+  questions Question[]
+
+  @@map("sessions")
+}
+
+model Speaker {
+  id       Int     @id @default(autoincrement())
+  name     String
+  photoUrl String? @map("photo_url")
+  bio      String?
+  twitter  String?
+  linkedin String?
+  website  String?
+
+  sessions SessionSpeaker[]
+
+  @@map("speakers")
+}
+
+model SessionSpeaker {
+  sessionId Int @map("session_id")
+  speakerId Int @map("speaker_id")
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  speaker Speaker @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+
+  @@id([sessionId, speakerId])
+  @@map("session_speakers")
+}
+
+model Question {
+  id         Int      @id @default(autoincrement())
+  content    String
+  sessionId  Int      @map("session_id")
+  authorName String?  @map("author_name")
+  upvotes    Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("questions")
+}
