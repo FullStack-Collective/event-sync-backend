@@ -70,7 +70,11 @@ export const sessionController = {
    * Supprimer une session (admin uniquement)
    */
   delete: async (req: Request, res: Response) => {
-    await sessionService.delete(parseInt(req.params.id));
+    const id = req.params.id;
+    if (id !== 'string') {
+        throw new Error('ID invalide');
+    }
+    await sessionService.delete(parseInt(id));
     res.status(204).send();
   }
 };
