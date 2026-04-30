@@ -19,7 +19,11 @@ export const sessionController = {
    * Récupérer une session spécifique
    */
   getOne: async (req: Request, res: Response) => {
-    const session = await sessionService.findById(parseInt(req.params.id));
+    const id = req.params.id;
+    if (id !== 'string') {
+        throw new Error('ID invalide');
+    }
+    const session = await sessionService.findById(parseInt(id));
     res.json({ data: session });
   },
   
