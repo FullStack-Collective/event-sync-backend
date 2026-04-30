@@ -32,7 +32,11 @@ export const sessionController = {
    * Récupérer toutes les sessions d'un événement
    */
   getByEvent: async (req: Request, res: Response) => {
-    const sessions = await sessionService.findByEvent(parseInt(req.params.eventId));
+    const eventId = req.params.eventId;
+    if (eventId !== 'string') {
+        throw new Error('Event ID invalide');
+    }
+    const sessions = await sessionService.findByEvent(parseInt(eventId));
     res.json({
       data: sessions,
       total: sessions.length
