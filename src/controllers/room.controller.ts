@@ -19,7 +19,13 @@ export const roomController = {
    * Récupérer une salle spécifique avec ses sessions
    */
   getOne: async (req: Request, res: Response) => {
-    const room = await roomService.findById(parseInt(req.params.id));
+    const id = req.params.id;
+    
+    if (typeof id !== 'string') {
+      throw new Error('ID invalide');
+    }
+
+    const room = await roomService.findById(parseInt(id));
     res.json({ data: room });
   },
   
@@ -37,7 +43,14 @@ export const roomController = {
    * Modifier une salle (admin uniquement)
    */
   update: async (req: Request, res: Response) => {
-    const room = await roomService.update(parseInt(req.params.id), req.body);
+
+    const id = req.params.id;
+    
+    if (typeof id !== 'string') {
+      throw new Error('ID invalide');
+    }
+
+    const room = await roomService.update(parseInt(id), req.body);
     res.json({ data: room });
   },
   
@@ -46,7 +59,12 @@ export const roomController = {
    * Supprimer une salle (admin uniquement)
    */
   delete: async (req: Request, res: Response) => {
-    await roomService.delete(parseInt(req.params.id));
+    const id = req.params.id;
+    
+    if (typeof id !== 'string') {
+      throw new Error('ID invalide');
+    }
+    await roomService.delete(parseInt(id));
     res.status(204).send();  // 204 = No Content (succès sans réponse)
   }
 };
