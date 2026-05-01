@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 // import sessionRoutes from './routes/session.routes';
 // import speakerRoutes from './routes/speaker.routes';
 // import roomRoutes from './routes/room.routes';
-// import questionRoutes from './routes/question.routes';
+ import questionRoutes from './routes/question.routes';
 
 import { errorMiddleware } from './middleware/error.middleware';
 
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use('/api/sessions', sessionRoutes);
 // app.use('/api/speakers', speakerRoutes);
 // app.use('/api/rooms', roomRoutes);
-// app.use('/api/questions', questionRoutes);
+app.use('/api/questions', questionRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend EventSync fonctionne !' });
