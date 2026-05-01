@@ -8,4 +8,6 @@ router.get('/', SpeakerController.getAllSpeakers);
 router.get('/:id', SpeakerController.getSpeakerById);
 router.post('/', authMiddleware, SpeakerController.createSpeaker);
 
+router.put('/:id', SpeakerController.updateSpeaker);
+
 export default router;
