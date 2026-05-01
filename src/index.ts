@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use('/api/sessions', sessionRoutes);
 // app.use('/api/speakers', speakerRoutes);
 // app.use('/api/rooms', roomRoutes);
-app.use('/api/questions', questionRoutes);
+app.use('/api', questionRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend EventSync fonctionne !' });
