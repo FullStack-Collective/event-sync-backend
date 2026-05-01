@@ -21,42 +21,30 @@ export const roomController = {
     res.json({ data: room });
   },
   
-  /**
-   * POST /api/rooms
-   * Créer une nouvelle salle (admin uniquement)
-   */
   create: async (req: Request, res: Response) => {
     const room = await roomService.create(req.body);
     res.status(201).json({ data: room });
   },
   
-  /**
-   * PUT /api/rooms/:id
-   * Modifier une salle (admin uniquement)
-   */
   update: async (req: Request, res: Response) => {
 
     const id = req.params.id;
     
     if (typeof id !== 'string') {
-      throw new Error('ID invalide');
+      throw new Error('Invalid ID');
     }
 
     const room = await roomService.update(parseInt(id), req.body);
     res.json({ data: room });
   },
   
-  /**
-   * DELETE /api/rooms/:id
-   * Supprimer une salle (admin uniquement)
-   */
   delete: async (req: Request, res: Response) => {
     const id = req.params.id;
     
     if (typeof id !== 'string') {
-      throw new Error('ID invalide');
+      throw new Error('Invalid ID');
     }
     await roomService.delete(parseInt(id));
-    res.status(204).send();  // 204 = No Content (succès sans réponse)
+    res.status(204).send();
   }
 };

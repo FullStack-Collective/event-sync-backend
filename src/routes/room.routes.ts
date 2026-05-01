@@ -8,7 +8,7 @@ router.get('/', roomController.getAll);
 router.get('/:id', roomController.getOne);
 
 router.post('/', authMiddleware, roomController.create);
-router.put('/:id', authMiddleware, roomController.update);   // Modifier une salle
-router.delete('/:id', authMiddleware, roomController.delete); // Supprimer une salle
+router.put('/:id', authMiddleware, roomController.update);
+router.delete('/:id', authMiddleware, roomController.delete);
 
 export default router;
