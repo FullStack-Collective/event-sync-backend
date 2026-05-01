@@ -5,5 +5,6 @@ const router = Router();
 
 // Endpoint : GET /api/speakers
 router.get('/', SpeakerController.getAllSpeakers);
+router.get('/:id', SpeakerController.getSpeakerById);
 
 export default router;
