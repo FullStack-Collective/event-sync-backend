@@ -15,10 +15,6 @@ export const roomService = {
     });
   },
   
-  /**
-   * Récupérer une salle spécifique par son ID
-   * Public - accessible à tous
-   */
   findById: async (id: number) => {
     const room = await prisma.room.findUnique({
       where: { id },
@@ -28,7 +24,7 @@ export const roomService = {
             event: true,
             speakers: true
           },
-          orderBy: { startTime: 'asc' }  // Tri chronologique
+          orderBy: { startTime: 'asc' }
         }
       }
     });

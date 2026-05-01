@@ -10,15 +10,11 @@ export const roomController = {
     });
   },
   
-  /**
-   * GET /api/rooms/:id
-   * Récupérer une salle spécifique avec ses sessions
-   */
   getOne: async (req: Request, res: Response) => {
     const id = req.params.id;
     
     if (typeof id !== 'string') {
-      throw new Error('ID invalide');
+      throw new Error('Invalid ID');
     }
 
     const room = await roomService.findById(parseInt(id));
