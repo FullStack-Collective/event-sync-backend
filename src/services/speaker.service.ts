@@ -73,4 +73,13 @@ export class SpeakerService {
             where: { id },
         });
     }
+
+    static async getSessionsBySpeakerId(speakerId: number) {
+        return await prisma.sessionSpeaker.findMany({
+            where: { speakerId },
+            include: {
+                session: true,
+            },
+        });
+    }
 }

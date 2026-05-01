@@ -98,4 +98,27 @@ export class SpeakerController {
             });
         }
     }
+
+    static async getSessionsForSpeaker(req: Request, res: Response) {
+        try {
+            const id = parseIdParam(req.params.id);
+
+            if (id === null) {
+                return res.status(400).json({ error: 'Identifiant invalide ou manquant dans l\'URL.' });
+            }
+
+            const existingSpeaker = await SpeakerService.getById(id);
+            if (!existingSpeaker) {
+                return res.status(404).json({ error: 'Intervenant non trouvé.' });
+            }
+
+            const sessions = await SpeakerService.getSessionsBySpeakerId(id);
+
+            return res.status(200).json(sessions);
+        } catch (error) {
+            return res.status(500).json({
+                error: 'Erreur lors de la récupération des sessions de l\'intervenant.',
+            });
+        }
+    }
 }
