@@ -57,6 +57,7 @@ model Speaker {
   twitter  String?
   linkedin String?
   website  String?
+  facebook String?
 
   sessions SessionSpeaker[]
 

@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 // Import des routes (à décommenter au fur et à mesure)
 // import eventRoutes from './routes/event.routes';
 // import sessionRoutes from './routes/session.routes';
-// import speakerRoutes from './routes/speaker.routes';
+import speakerRoutes from './routes/speaker.routes';
 // import roomRoutes from './routes/room.routes';
 // import questionRoutes from './routes/question.routes';
 
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // app.use('/api/events', eventRoutes);
 // app.use('/api/sessions', sessionRoutes);
-// app.use('/api/speakers', speakerRoutes);
+app.use('/api/speakers', speakerRoutes);
 // app.use('/api/rooms', roomRoutes);
 // app.use('/api/questions', questionRoutes);
 
