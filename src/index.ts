@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 // import eventRoutes from './routes/event.routes';
 // import sessionRoutes from './routes/session.routes';
 // import speakerRoutes from './routes/speaker.routes';
-// import roomRoutes from './routes/room.routes';
+import roomRoutes from './routes/room.routes';
 // import questionRoutes from './routes/question.routes';
 
 import { errorMiddleware } from './middleware/error.middleware';
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use('/api/events', eventRoutes);
 // app.use('/api/sessions', sessionRoutes);
 // app.use('/api/speakers', speakerRoutes);
-// app.use('/api/rooms', roomRoutes);
+app.use('/api/rooms', roomRoutes);
 // app.use('/api/questions', questionRoutes);
 
 app.get('/api/health', (req, res) => {
