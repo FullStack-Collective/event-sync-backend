@@ -19,4 +19,25 @@ export class SpeakerService {
             },
         });
     }
+    static async create(data: {
+        name: string;
+        photoUrl?: string;
+        bio?: string;
+        twitter?: string;
+        linkedin?: string;
+        website?: string;
+        facebook?: string;
+    }): Promise<Speaker> {
+        return await prisma.speaker.create({
+            data: {
+                name: data.name,
+                photoUrl: data.photoUrl,
+                bio: data.bio,
+                twitter: data.twitter,
+                linkedin: data.linkedin,
+                website: data.website,
+                facebook: data.facebook,
+            },
+        });
+    }
 }

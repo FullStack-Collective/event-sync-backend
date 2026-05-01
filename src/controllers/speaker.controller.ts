@@ -36,4 +36,20 @@ export class SpeakerController {
             });
         }
     }
+
+    static async createSpeaker(req: Request, res: Response) {
+        try {
+            const speakerData = req.body;
+
+            if (!speakerData.name) {
+                return res.status(400).json({ error: 'Le champ "name" est obligatoire.' });
+            }
+
+            const newSpeaker = await SpeakerService.create(speakerData);
+
+            return res.status(201).json(newSpeaker);
+        } catch (error) {
+            return res.status(500).json({ error: 'Erreur lors de la création de l\'intervenant.' });
+        }
+    }
 }
