@@ -2,10 +2,6 @@ import { Request, Response } from 'express';
 import { roomService } from '../services/room.service';
 
 export const roomController = {
-  /**
-   * GET /api/rooms
-   * Récupérer toutes les salles
-   */
   getAll: async (req: Request, res: Response) => {
     const rooms = await roomService.findAll();
     res.json({

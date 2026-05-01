@@ -1,21 +1,17 @@
 import { prisma } from '../utils/prisma';
 
 export const roomService = {
-  /**
-   * Récupérer toutes les salles avec leurs sessions
-   * Public - accessible à tous
-   */
   findAll: async () => {
     return await prisma.room.findMany({
       include: {
         sessions: {
           include: {
-            event: true,      // Inclut l'événement parent
-            speakers: true    // Inclut les intervenants
+            event: true,
+            speakers: true
           }
         }
       },
-      orderBy: { name: 'asc' }  // Tri alphabétique
+      orderBy: { name: 'asc' }
     });
   },
   
