@@ -67,4 +67,10 @@ export class SpeakerService {
             },
         });
     }
+
+    static async delete(id: number): Promise<Speaker> {
+        return await prisma.speaker.delete({
+            where: { id },
+        });
+    }
 }

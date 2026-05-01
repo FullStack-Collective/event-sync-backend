@@ -9,5 +9,6 @@ router.get('/:id', SpeakerController.getSpeakerById);
 router.post('/', authMiddleware, SpeakerController.createSpeaker);
 
 router.put('/:id', SpeakerController.updateSpeaker);
+router.delete('/:id', SpeakerController.deleteSpeaker);
 
 export default router;

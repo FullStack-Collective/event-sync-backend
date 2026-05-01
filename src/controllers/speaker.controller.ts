@@ -54,7 +54,6 @@ export class SpeakerController {
 
     static async updateSpeaker(req: Request, res: Response) {
         try {
-            // Utilisation de la même fonction factorisée pour le PUT
             const id = parseIdParam(req.params.id);
 
             if (id === null) {
@@ -73,6 +72,29 @@ export class SpeakerController {
         } catch (error) {
             return res.status(500).json({
                 error: 'Erreur lors de la modification de l\'intervenant.',
+            });
+        }
+    }
+
+    static async deleteSpeaker(req: Request, res: Response) {
+        try {
+            const id = parseIdParam(req.params.id);
+
+            if (id === null) {
+                return res.status(400).json({ error: 'Identifiant invalide ou manquant dans l\'URL.' });
+            }
+
+            const existingSpeaker = await SpeakerService.getById(id);
+            if (!existingSpeaker) {
+                return res.status(404).json({ error: 'Intervenant non trouvé.' });
+            }
+
+            await SpeakerService.delete(id);
+
+            return res.status(204).send();
+        } catch (error) {
+            return res.status(500).json({
+                error: 'Erreur lors de la suppression de l\'intervenant.',
             });
         }
     }
