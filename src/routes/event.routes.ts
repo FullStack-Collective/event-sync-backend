@@ -10,7 +10,7 @@ router.get('/:id', eventController.getOne);
 router.get('/:id/live', eventController.getCurrentLive);   
 router.get('/:id/stats', eventController.getStats);       
 
- router.post('/',authMiddleware, eventController.create);
+router.post('/',authMiddleware, eventController.create);
 router.put('/:id',authMiddleware, eventController.update);
 router.delete('/:id',authMiddleware, eventController.delete);
 
