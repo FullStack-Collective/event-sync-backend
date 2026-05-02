@@ -20,4 +20,9 @@ router.post(
   QuestionController.createQuestion
 );
 
+router.delete(
+  "/:id",
+  QuestionController.deleteQuestion
+);
+
 export default router;
