@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { QuestionService } from "../services/question.service";
 
 export const QuestionController = {
+
+  //=================================================================
   async getQuestionsBySession(req: Request, res: Response) {
     try {
       const sessionId = Number(req.params.sessionId);
@@ -49,7 +51,9 @@ export const QuestionController = {
         return res.status(400).json({ message: "Invalid question id" });
       }
 
-      const result = await QuestionService.upvoteQuestion(id);
+      const userId = req.ip || "anonymous";
+
+      const result = await QuestionService.upvoteQuestion(id, userId);
 
       return res.status(200).json({
         message: "Upvote added",
@@ -64,45 +68,49 @@ export const QuestionController = {
         message: "Internal server error",
       });
     }
-
   },
 
   // =================================================================
 
   async createQuestion(req: Request, res: Response) {
-  try {
-    const { content, sessionId, authorName } = req.body;
+    try {
+      const { content, sessionId, authorName } = req.body;
 
-    if (!content || !sessionId) {
-      return res.status(400).json({
-        message: "content and sessionId are required",
+      if (!content || !sessionId) {
+        return res.status(400).json({
+          message: "content and sessionId are required",
+        });
+      }
+
+      const question = await QuestionService.createQuestion({
+        content,
+        sessionId: Number(sessionId),
+        authorName,
+      });
+
+      return res.status(201).json({
+        message: "Question created",
+        data: question,
+      });
+    } catch (error: any) {
+      if (error.message === "SESSION_NOT_FOUND") {
+        return res.status(404).json({ message: "Session not found" });
+      }
+
+      if (error.message === "SESSION_NOT_LIVE") {
+        return res.status(403).json({
+          message: "Questions are only allowed during live session",
+        });
+      }
+
+      return res.status(500).json({
+        message: "Internal server error",
       });
     }
+  },
 
-    const question = await QuestionService.createQuestion({
-      content,
-      sessionId: Number(sessionId),
-      authorName,
-    });
 
-    return res.status(201).json({
-      message: "Question created",
-      data: question,
-    });
-  } catch (error: any) {
-    if (error.message === "SESSION_NOT_FOUND") {
-      return res.status(404).json({ message: "Session not found" });
-    }
+  //=================================================================
 
-    if (error.message === "SESSION_NOT_LIVE") {
-      return res.status(403).json({
-        message: "Questions are only allowed during live session",
-      });
-    }
-
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-}
+  
 };

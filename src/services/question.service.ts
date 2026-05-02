@@ -48,7 +48,7 @@ export const QuestionService = {
     // =================================================================
 
 
-    async upvoteQuestion(questionId: number) {
+    async upvoteQuestion(questionId: number,userId:string) {
   // 🔹 vérifier si la question existe
   const question = await prisma.question.findUnique({
     where: { id: questionId },
@@ -58,8 +58,8 @@ export const QuestionService = {
     throw new Error("QUESTION_NOT_FOUND");
   }
 
-  // 🔹 increment upvotes
-  const updated = await prisma.question.update({
+
+    return await prisma.question.update({
     where: { id: questionId },
     data: {
       upvotes: {
@@ -67,8 +67,7 @@ export const QuestionService = {
       },
     },
   });
-
-  return updated;
+ 
 },
 
 
