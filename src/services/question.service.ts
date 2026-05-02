@@ -69,6 +69,45 @@ export const QuestionService = {
   });
 
   return updated;
+},
+
+
+// =================================================================
+
+
+async createQuestion(data: {
+  content: string;
+  sessionId: number;
+  authorName?: string;
+}) {
+  // 1. check session
+  const session = await prisma.session.findUnique({
+    where: { id: data.sessionId },
+  });
+
+  if (!session) {
+    throw new Error("SESSION_NOT_FOUND");
+  }
+
+  // 2. check LIVE
+  const now = Date.now();
+  const start = session.startTime.getTime();
+  const end = session.endTime.getTime();
+
+  const isLive = now >= start && now <= end;
+
+  if (!isLive) {
+    throw new Error("SESSION_NOT_LIVE");
+  }
+
+  // 3. create question
+  return await prisma.question.create({
+    data: {
+      content: data.content,
+      sessionId: data.sessionId,
+      authorName: data.authorName || null,
+    },
+  });
 }
 
 
