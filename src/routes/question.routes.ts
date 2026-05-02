@@ -15,4 +15,9 @@ router.put(
   QuestionController.upvoteQuestion
 );
 
+router.post(
+  "/",
+  QuestionController.createQuestion
+);
+
 export default router;
