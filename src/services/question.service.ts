@@ -107,6 +107,25 @@ async createQuestion(data: {
       authorName: data.authorName || null,
     },
   });
+},
+
+
+// =================================================================
+
+async deleteQuestion(questionId: number) {
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+  });
+
+  if (!question) {
+    throw new Error("QUESTION_NOT_FOUND");
+  }
+
+  await prisma.question.delete({
+    where: { id: questionId },
+  });
+
+  return { success: true };
 }
 
 
