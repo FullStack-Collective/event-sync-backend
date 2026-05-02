@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const QuestionService = {
   async getQuestionsBySession(sessionId: number) {
-    // 🔹 1. récupérer session
+    //  1. récupérer session
     const session = await prisma.session.findUnique({
       where: { id: sessionId },
     });
@@ -13,26 +13,26 @@ export const QuestionService = {
       throw new Error("SESSION_NOT_FOUND");
     }
 
-    // 🔹 2. gestion du temps (propre)
+    //  2. gestion du temps (propre)
     const now = Date.now();
     const start = session.startTime.getTime();
     const end = session.endTime.getTime();
 
-    // 🔹 3. debug (uniquement en dev)
+    //  3. debug (uniquement en dev)
     if (process.env.NODE_ENV !== "production") {
       console.log(" NOW   :", new Date(now).toISOString());
       console.log(" START :", new Date(start).toISOString());
       console.log(" END   :", new Date(end).toISOString());
     }
 
-    // 🔹 4. logique live
+    //  4. logique live
     const isLive = now >= start && now <= end;
 
     if (!isLive) {
       throw new Error("SESSION_NOT_LIVE");
     }
 
-    // 🔹 5. récupérer questions
+    //  5. récupérer questions
     const questions = await prisma.question.findMany({
       where: { sessionId },
       orderBy: {
@@ -41,5 +41,40 @@ export const QuestionService = {
     });
 
     return questions;
+
+    
   },
+
+    // =================================================================
+
+
+    async upvoteQuestion(questionId: number) {
+  // 🔹 vérifier si la question existe
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+  });
+
+  if (!question) {
+    throw new Error("QUESTION_NOT_FOUND");
+  }
+
+  // 🔹 increment upvotes
+  const updated = await prisma.question.update({
+    where: { id: questionId },
+    data: {
+      upvotes: {
+        increment: 1,
+      },
+    },
+  });
+
+  return updated;
+}
+
+
+
+
+
+
+
 };
