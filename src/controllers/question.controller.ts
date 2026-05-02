@@ -112,5 +112,27 @@ export const QuestionController = {
 
   //=================================================================
 
-  
+  async deleteQuestion(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid question id" });
+    }
+
+    await QuestionService.deleteQuestion(id);
+
+    return res.status(200).json({
+      message: "Question deleted successfully",
+    });
+  } catch (error: any) {
+    if (error.message === "QUESTION_NOT_FOUND") {
+      return res.status(404).json({ message: "Question not found" });
+    }
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
 };
