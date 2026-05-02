@@ -2,10 +2,6 @@ import { Request, Response } from 'express';
 import { sessionService } from '../services/session.service';
 
 export const sessionController = {
-  /**
-   * GET /api/sessions
-   * Récupérer toutes les sessions
-   */
   getAll: async (req: Request, res: Response) => {
     const sessions = await sessionService.findAll();
     res.json({
@@ -14,27 +10,19 @@ export const sessionController = {
     });
   },
   
-  /**
-   * GET /api/sessions/:id
-   * Récupérer une session spécifique
-   */
   getOne: async (req: Request, res: Response) => {
     const id = req.params.id;
     if (id !== 'string') {
-        throw new Error('ID invalide');
+        throw new Error('Invalid ID');
     }
     const session = await sessionService.findById(parseInt(id));
     res.json({ data: session });
   },
   
-  /**
-   * GET /api/events/:eventId/sessions
-   * Récupérer toutes les sessions d'un événement
-   */
   getByEvent: async (req: Request, res: Response) => {
     const eventId = req.params.eventId;
     if (eventId !== 'string') {
-        throw new Error('Event ID invalide');
+        throw new Error('Invalid Event ID');
     }
     const sessions = await sessionService.findByEvent(parseInt(eventId));
     res.json({
@@ -43,36 +31,24 @@ export const sessionController = {
     });
   },
   
-  /**
-   * POST /api/sessions
-   * Créer une nouvelle session (admin uniquement)
-   */
   create: async (req: Request, res: Response) => {
     const session = await sessionService.create(req.body);
     res.status(201).json({ data: session });
   },
   
-  /**
-   * PUT /api/sessions/:id
-   * Modifier une session (admin uniquement)
-   */
   update: async (req: Request, res: Response) => {
     const id = req.params.id;
     if (id !== 'string') {
-        throw new Error('ID invalide');
+        throw new Error('Invalid ID');
     }
     const session = await sessionService.update(parseInt(id), req.body);
     res.json({ data: session });
   },
   
-  /**
-   * DELETE /api/sessions/:id
-   * Supprimer une session (admin uniquement)
-   */
   delete: async (req: Request, res: Response) => {
     const id = req.params.id;
     if (id !== 'string') {
-        throw new Error('ID invalide');
+        throw new Error('Invalid ID');
     }
     await sessionService.delete(parseInt(id));
     res.status(204).send();
