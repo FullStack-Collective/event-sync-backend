@@ -24,8 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use('/api/sessions', sessionRoutes);
 // app.use('/api/speakers', speakerRoutes);
 // app.use('/api/rooms', roomRoutes);
-app.use('/api', questionRoutes);
-
+app.use('/api/questions', questionRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend EventSync fonctionne !' });
 });
@@ -35,3 +34,4 @@ app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
 });
+

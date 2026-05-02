@@ -42,7 +42,9 @@ export const QuestionController = {
   // =================================================================
 
   async upvoteQuestion(req: Request, res: Response) {
+
   try {
+    
     const id = Number(req.params.id);
 
     if (isNaN(id)) {
