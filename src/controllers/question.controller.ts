@@ -15,7 +15,7 @@ export const QuestionController = {
 
       return res.status(200).json(questions);
     } catch (error: any) {
-      console.log("❌ ERROR QUESTION CONTROLLER:", error);
+      console.log("ERROR QUESTION CONTROLLER:", error);
 
       if (error.message === "SESSION_NOT_FOUND") {
         return res.status(404).json({ message: "Session not found" });
