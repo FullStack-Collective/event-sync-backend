@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 
 // Import des routes (à décommenter au fur et à mesure)
 import eventRoutes from './routes/event.routes';
-// import sessionRoutes from './routes/session.routes';
+import sessionRoutes from './routes/session.routes';
 // import speakerRoutes from './routes/speaker.routes';
-// import roomRoutes from './routes/room.routes';
+import roomRoutes from './routes/room.routes';
 // import questionRoutes from './routes/question.routes';
 
 import { errorMiddleware } from './middleware/error.middleware';
@@ -19,20 +19,18 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use('/api/events', eventRoutes);
-// app.use('/api/sessions', sessionRoutes);
+app.use('/api/sessions', sessionRoutes);
 // app.use('/api/speakers', speakerRoutes);
-// app.use('/api/rooms', roomRoutes);
+app.use('/api/rooms', roomRoutes);
 // app.use('/api/questions', questionRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Backend EventSync fonctionne !' });
+  res.json({ status: 'OK', message: 'Backend EventSync is working !' });
 });
 
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
-  console.log(`✅ Le serveur écoute réellement sur le port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
