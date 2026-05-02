@@ -27,11 +27,11 @@ app.use('/api/rooms', roomRoutes);
 // app.use('/api/questions', questionRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Backend EventSync fonctionne !' });
+  res.json({ status: 'OK', message: 'Backend EventSync is working !' });
 });
 
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
