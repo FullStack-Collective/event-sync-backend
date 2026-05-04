@@ -82,6 +82,7 @@ export class SpeakerService {
             },
         });
     }
+
     static async removeSession(speakerId: number, sessionId: number) {
         return await prisma.sessionSpeaker.delete({
             where: {
@@ -89,6 +90,15 @@ export class SpeakerService {
                     speakerId,
                     sessionId,
                 },
+            },
+        });
+    }
+
+    static async addSession(speakerId: number, sessionId: number) {
+        return await prisma.sessionSpeaker.create({
+            data: {
+                speakerId,
+                sessionId,
             },
         });
     }

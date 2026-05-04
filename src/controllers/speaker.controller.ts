@@ -160,4 +160,54 @@ export class SpeakerController {
             });
         }
     }
+
+    static async addSessionToSpeaker(req: Request, res: Response) {
+        try {
+            const sessionId = parseIdParam(req.params.sessionId);
+            const speakerId = parseIdParam(req.params.speakerId);
+
+            if (speakerId === null || sessionId === null) {
+                return res.status(400).json({
+                    error: 'Identifiant(s) de l\'intervenant ou de la session invalide(s).'
+                });
+            }
+
+            // 1. Vérification de l'existence du Speaker
+            const speakerExists = await SpeakerService.getById(speakerId);
+            if (!speakerExists) {
+                return res.status(404).json({ error: 'Intervenant non trouvé.' });
+            }
+
+            const sessionExists = await prisma.session.findUnique({
+                where: { id: sessionId }
+            });
+            if (!sessionExists) {
+                return res.status(404).json({ error: 'Session non trouvée.' });
+            }
+
+            const existingLink = await prisma.sessionSpeaker.findUnique({
+                where: {
+                    sessionId_speakerId: {
+                        sessionId,
+                        speakerId
+                    }
+                }
+            });
+
+            if (existingLink) {
+                return res.status(409).json({
+                    error: 'L\'intervenant est déjà associé à cette session.'
+                });
+            }
+
+            // 4. Création de l'association
+            const newLink = await SpeakerService.addSession(speakerId, sessionId);
+
+            return res.status(201).json(newLink);
+        } catch (error) {
+            return res.status(500).json({
+                error: 'Erreur lors de l\'ajout de l\'intervenant à la session.',
+            });
+        }
+    }
 }
