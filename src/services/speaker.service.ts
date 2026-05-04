@@ -13,7 +13,7 @@ export class SpeakerService {
             include: {
                 sessions: {
                     include: {
-                        session: true, // Inclut les détails de la session liée
+                        session: true,
                     },
                 },
             },
@@ -79,6 +79,16 @@ export class SpeakerService {
             where: { speakerId },
             include: {
                 session: true,
+            },
+        });
+    }
+    static async removeSession(speakerId: number, sessionId: number) {
+        return await prisma.sessionSpeaker.delete({
+            where: {
+                sessionId_speakerId: {
+                    speakerId,
+                    sessionId,
+                },
             },
         });
     }

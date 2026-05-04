@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { SpeakerService } from '../services/speaker.service';
 import {parseIdParam} from "../utils/validation.util";
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export class SpeakerController {
     static async getAllSpeakers(req: Request, res: Response) {
@@ -118,6 +121,42 @@ export class SpeakerController {
         } catch (error) {
             return res.status(500).json({
                 error: 'Erreur lors de la récupération des sessions de l\'intervenant.',
+            });
+        }
+    }
+
+    static async removeSessionFromSpeaker(req: Request, res: Response) {
+        try {
+            const speakerId = parseIdParam(req.params.speakerId);
+            const sessionId = parseIdParam(req.params.sessionId);
+
+            if (speakerId === null || sessionId === null) {
+                return res.status(400).json({
+                    error: 'Identifiant(s) de l\'intervenant ou de la session invalide(s).'
+                });
+            }
+
+            const existingLink = await prisma.sessionSpeaker.findUnique({
+                where: {
+                    sessionId_speakerId: {
+                        speakerId,
+                        sessionId,
+                    }
+                }
+            });
+
+            if (!existingLink) {
+                return res.status(404).json({
+                    error: 'L\'intervenant n\'est pas associé à cette session.'
+                });
+            }
+
+            await SpeakerService.removeSession(speakerId, sessionId);
+
+            return res.status(204).send();
+        } catch (error) {
+            return res.status(500).json({
+                error: 'Erreur lors du retrait de l\'intervenant de la session.',
             });
         }
     }

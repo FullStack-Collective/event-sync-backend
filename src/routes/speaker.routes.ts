@@ -6,11 +6,14 @@ const router = Router();
 
 router.get('/', SpeakerController.getAllSpeakers);
 router.get('/:id', SpeakerController.getSpeakerById);
-router.post('/', authMiddleware, SpeakerController.createSpeaker);
 router.get('/:id/sessions', SpeakerController.getSessionsForSpeaker);
 
-router.put('/:id', SpeakerController.updateSpeaker);
-router.delete('/:id', SpeakerController.deleteSpeaker);
+
+
+router.post('/', authMiddleware, SpeakerController.createSpeaker);
+router.put('/:id', authMiddleware, SpeakerController.updateSpeaker);
+router.delete('/:id', authMiddleware, SpeakerController.deleteSpeaker);
+router.delete('/:speakerId/sessions/:sessionId', authMiddleware, SpeakerController.removeSessionFromSpeaker);
 
 
 export default router;
