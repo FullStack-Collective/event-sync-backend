@@ -1,4 +1,5 @@
-import { generateToken, JWTPayload, verifyToken } from '../lib/jwt';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@eventsync.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
@@ -6,10 +7,14 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const ADMIN_USER = {
   id: 1,
   email: ADMIN_EMAIL,
-  password: ADMIN_PASSWORD,
+  passwordHash: '',
   role: 'admin' as const,
   name: 'Administrator',
 };
+
+if (ADMIN_PASSWORD) {
+  ADMIN_USER.passwordHash = ADMIN_PASSWORD;
+}
 
 export interface LoginRequest {
   email: string;
@@ -39,17 +44,25 @@ export interface VerifyResponse {
 export async function loginAdmin(credentials: LoginRequest): Promise<LoginResponse> {
   const { email, password } = credentials;
   
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+  if (email !== ADMIN_EMAIL) {
     throw new Error('Invalid email or password');
   }
   
-  const payload: JWTPayload = {
+  if (password !== ADMIN_PASSWORD) {
+    throw new Error('Invalid email or password');
+  }
+  
+  const payload = {
     id: ADMIN_USER.id,
     email: ADMIN_USER.email,
     role: ADMIN_USER.role,
   };
   
-  const token = generateToken(payload);
+  const token = jwt.sign(
+    payload,
+    process.env.JWT_SECRET || 'event-sync-secret-key',
+    { expiresIn: '24h' }
+  );
   
   return {
     token,
@@ -64,24 +77,27 @@ export async function loginAdmin(credentials: LoginRequest): Promise<LoginRespon
 }
 
 export async function verifyAdminToken(token: string): Promise<VerifyResponse> {
-  const decoded = verifyToken(token);
-  
-  if (!decoded) {
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'event-sync-secret-key'
+    ) as any;
+    
+    if (decoded.email !== ADMIN_EMAIL) {
+      return { valid: false };
+    }
+    
+    return {
+      valid: true,
+      user: {
+        id: decoded.id,
+        email: decoded.email,
+        role: decoded.role,
+      },
+    };
+  } catch (error) {
     return { valid: false };
   }
-  
-  if (decoded.email !== ADMIN_EMAIL) {
-    return { valid: false };
-  }
-  
-  return {
-    valid: true,
-    user: {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role,
-    },
-  };
 }
 
 export function logoutAdmin(): { success: boolean; message: string } {
