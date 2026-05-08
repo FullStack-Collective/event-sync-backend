@@ -43,6 +43,8 @@ async function main() {
     console.log(`   - Sessions: ${stats.sessions}`);
     console.log(`   - Questions: ${stats.questions}`);
     
+    return { success: true, stats };
+    
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;
@@ -51,8 +53,13 @@ async function main() {
   }
 }
 
+// Execute main function
 main()
+  .then(() => {
+    console.log('\n✨ Seeding finished successfully!');
+  })
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error('\n💥 Seeding failed:', e);
+    // Instead of process.exit(1), just throw the error
+    throw e;
   });
