@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 import eventRoutes from "./routes/event.routes";
 import sessionRoutes from "./routes/session.routes";
-// import speakerRoutes from './routes/speaker.routes';
+import speakerRoutes from './routes/speaker.routes';
 import roomRoutes from "./routes/room.routes";
 import questionRoutes from "./routes/question.routes";
 
@@ -21,9 +21,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/events", eventRoutes);
 app.use("/api/sessions", sessionRoutes);
-// app.use('/api/speakers', speakerRoutes);
+app.use('/api/speakers', speakerRoutes);
 app.use("/api/rooms", roomRoutes);
-// app.use('/api/questions', questionRoutes);
 
 app.post("/api/admin/login", async (req, res) => {
   const { email, password } = req.body;
