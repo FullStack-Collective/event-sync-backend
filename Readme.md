@@ -227,10 +227,10 @@ npm run clean            # Delete node_modules and package-lock.json
 
 | Developer     | Entities                   | Number of Endpoints |
 | ------------- | -------------------------- | ------------------- |
-| **Valisoa**   | Events                     | 5                   |
-| **David**     | Sessions + Rooms           | 10                  |
-| **Zinedis**   | Speakers + SessionSpeakers | 8                   |
-| **Herinjaka** | Questions + Live Logic     | 4                   |
+| [Valisoa](https://github.com/valisoa01)  | Events                     | 5                   |
+| [David](https://github.com/DavFilsDev)    | Sessions + Rooms           | 10                  |
+| [Zinedis](https://github.com/Safid849)   | Speakers + SessionSpeakers | 8                   |
+| [Herinjaka](https://github.com/24194Njaka) | Questions + Live Logic     | 4                   |
 
 ---
 
@@ -342,6 +342,6 @@ You can add this simple section at the end of the document:
 | Developer | Email                   |
 | --------- | ----------------------- |
 | [Valisoa](https://github.com/valisoa01)  | `not avalaible yet`   |
-| [David](https://github.com/DavFilsDev)     | `miharisoadavidfils@gmail.com`     |
+| [David](https://github.com/DavFilsDev)   | `miharisoadavidfils@gmail.com`     |
 | [Zinedis](https://github.com/Safid849)  | `nantenainabakari@gmail.com`   |
 | [Herinjaka](https://github.com/24194Njaka) | `not avalaible yet` |
