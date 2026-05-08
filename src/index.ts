@@ -19,45 +19,12 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use("/api/events", eventRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use('/api/speakers', speakerRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/questions", questionRoutes);
-
-app.post("/api/admin/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    const token = jwt.sign(
-      {
-        id: 1,
-        email: ADMIN_EMAIL,
-        role: "admin",
-      },
-      process.env.JWT_SECRET || "your-super-secret-key-change-me",
-      { expiresIn: "24h" },
-    );
-
-    res.json({
-      success: true,
-      token,
-      user: {
-        email: ADMIN_EMAIL,
-        role: "admin",
-      },
-    });
-  } else {
-    res.status(401).json({
-      success: false,
-      error: "Invalid email or password",
-    });
-  }
-});
-
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Backend EventSync is working !" });
 });
