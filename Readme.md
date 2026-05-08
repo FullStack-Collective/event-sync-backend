@@ -234,17 +234,9 @@ npm run clean            # Delete node_modules and package-lock.json
 
 ---
 
-## 🎯 Valisoa: Events (5 endpoints)
+## 🎯 Valisoa: Events
 
-### Files to Create
-
-```txt
-src/controllers/event.controller.ts
-src/services/event.service.ts
-src/routes/event.routes.ts
-```
-
-### Endpoints to Implement
+###  Implemented endpoints
 
 | Method | Endpoint          | Description                      | Auth   |
 | ------ | ----------------- | -------------------------------- | ------ |
@@ -254,22 +246,10 @@ src/routes/event.routes.ts
 | PUT    | `/api/events/:id` | Update an event                  | Admin  |
 | DELETE | `/api/events/:id` | Delete an event (cascade)        | Admin  |
 
----
 
-## 🎯 David: Sessions + Rooms (10 endpoints)
+## 🎯 David: Sessions + Rooms
 
-### Files to Create
-
-```txt
-src/controllers/session.controller.ts
-src/controllers/room.controller.ts
-src/services/session.service.ts
-src/services/room.service.ts
-src/routes/session.routes.ts
-src/routes/room.routes.ts
-```
-
-### Session Endpoints (6 endpoints)
+### Implemented endpoints (Sessions)
 
 | Method | Endpoint                        | Description                            | Auth   |
 | ------ | ------------------------------- | -------------------------------------- | ------ |
@@ -280,7 +260,7 @@ src/routes/room.routes.ts
 | PUT    | `/api/sessions/:id`             | Update a session                       | Admin  |
 | DELETE | `/api/sessions/:id`             | Delete a session                       | Admin  |
 
-### Room Endpoints (4 endpoints)
+### Implemented endpoints (Rooms)
 
 | Method | Endpoint         | Description    | Auth   |
 | ------ | ---------------- | -------------- | ------ |
@@ -290,19 +270,10 @@ src/routes/room.routes.ts
 | PUT    | `/api/rooms/:id` | Update a room  | Admin  |
 | DELETE | `/api/rooms/:id` | Delete a room  | Admin  |
 
----
 
-## 🎯 Zinedis: Speakers + SessionSpeakers (8 endpoints)
+## 🎯 Zinedis: Speakers + SessionSpeakers
 
-### Files to Create
-
-```txt
-src/controllers/speaker.controller.ts
-src/services/speaker.service.ts
-src/routes/speaker.routes.ts
-```
-
-### Speaker Endpoints (7 endpoints)
+### Implemented endpoints (Sessions)
 
 | Method | Endpoint                                       | Description                        | Auth   |
 | ------ | ---------------------------------------------- | ---------------------------------- | ------ |
@@ -314,19 +285,10 @@ src/routes/speaker.routes.ts
 | POST   | `/api/sessions/:sessionId/speakers/:speakerId` | Add a speaker to a session         | Admin  |
 | DELETE | `/api/sessions/:sessionId/speakers/:speakerId` | Remove a speaker from a session    | Admin  |
 
----
 
-## 🎯 Herinjaka: Questions + Live Logic (4 endpoints)
+## 🎯 Herinjaka: Questions + Live Logic
 
-### Files to Create
-
-```txt
-src/controllers/question.controller.ts
-src/services/question.service.ts
-src/routes/question.routes.ts
-```
-
-### Question Endpoints (4 endpoints)
+### Implemented endpoints (Sessions)
 
 | Method | Endpoint                             | Description                                      | Auth   |
 | ------ | ------------------------------------ | ------------------------------------------------ | ------ |
@@ -335,7 +297,6 @@ src/routes/question.routes.ts
 | PUT    | `/api/questions/:id/upvote`          | Upvote a question                                | Public |
 | DELETE | `/api/questions/:id`                 | Delete a question                                | Admin  |
 
-You can add this simple section at the end of the document:
 
 ## 👥 Contributors
 
