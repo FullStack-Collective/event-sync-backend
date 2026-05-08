@@ -339,9 +339,9 @@ You can add this simple section at the end of the document:
 
 ## 👥 Contributors
 
-| Developer | Email                   | GitHub                         |
-| --------- | ----------------------- | ------------------------------ |
-| Valisoa   | `valisoa@example.com`   | `https://github.com/valisoa`   |
-| David     | `david@example.com`     | `https://github.com/david`     |
-| Zinedis   | `zinedis@example.com`   | `https://github.com/zinedis`   |
-| Herinjaka | `herinjaka@example.com` | `https://github.com/herinjaka` |
+| Developer | Email                   |
+| --------- | ----------------------- |
+| [Valisoa](https://github.com/valisoa01)  | `not avalaible yet`   |
+| [David](https://github.com/DavFilsDev)     | `miharisoadavidfils@gmail.com`     |
+| [Zinedis](https://github.com/Safid849)  | `nantenainabakari@gmail.com`   |
+| [Herinjaka](https://github.com/24194Njaka) | `not avalaible yet` |
