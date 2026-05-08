@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import authRoutes from "./routes/auth.routes";
 import eventRoutes from "./routes/event.routes";
 import sessionRoutes from "./routes/session.routes";
 import speakerRoutes from './routes/speaker.routes';
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/api/auth", authRoutes);  
 app.use("/api/events", eventRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use('/api/speakers', speakerRoutes);
