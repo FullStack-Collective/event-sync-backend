@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
 
 import eventRoutes from "./routes/event.routes";
 import sessionRoutes from "./routes/session.routes";
