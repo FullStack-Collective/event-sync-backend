@@ -2,20 +2,6 @@
 
 EventSync is a real-time event management platform that replaces static materials (PDF, paper programs) with a dynamic interface for seamless navigation and live interaction during events.
 
-## 📋 Table of Contents
-
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Quick Setup for Developers](#quick-setup-for-developers)
-- [Database Setup Guide](#database-setup-guide)
-- [Prisma Commands](#prisma-commands)
-- [Project Structure](#project-structure)
-- [API Endpoints](#api-endpoints)
-- [Available Scripts](#available-scripts)
-- [Environment Variables](#environment-variables)
-- [Team Workflow](#team-workflow)
-- [Troubleshooting](#troubleshooting)
-
 ## 🚀 Tech Stack
 
 - **Runtime**: Node.js
