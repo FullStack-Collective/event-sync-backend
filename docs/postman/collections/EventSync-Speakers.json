@@ -1,0 +1,156 @@
+{
+  "info": {
+    "name": "EventSync - Speakers",
+    "description": "CRUD operations for speakers management and session assignments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Routes",
+      "item": [
+        {
+          "name": "GET All Speakers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers"]
+            }
+          }
+        },
+        {
+          "name": "GET Speaker by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers/{{SPEAKER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers", "{{SPEAKER_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "GET Speaker Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers/{{SPEAKER_ID}}/sessions",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers", "{{SPEAKER_ID}}", "sessions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Routes",
+      "item": [
+        {
+          "name": "CREATE Speaker",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response && response.id) {",
+                  "    pm.environment.set('SPEAKER_ID', response.id);",
+                  "    console.log('✅ Speaker ID saved:', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ada Lovelace\",\n  \"bio\": \"First computer programmer in history.\",\n  \"twitter\": \"@ada_computing\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers"]
+            }
+          }
+        },
+        {
+          "name": "UPDATE Speaker",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Updated bio: Visionary and mathematician.\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers/{{SPEAKER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers", "{{SPEAKER_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "ADD Speaker to Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions/{{SESSION_ID}}/speakers/{{SPEAKER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions", "{{SESSION_ID}}", "speakers", "{{SPEAKER_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "REMOVE Speaker from Session",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers/{{SPEAKER_ID}}/sessions/{{SESSION_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers", "{{SPEAKER_ID}}", "sessions", "{{SESSION_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Speaker",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ADMIN_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/speakers/{{SPEAKER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "speakers", "{{SPEAKER_ID}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "BASE_URL", "value": "http://localhost:3000" },
+    { "key": "ADMIN_TOKEN", "value": "" },
+    { "key": "SPEAKER_ID", "value": "1" },
+    { "key": "SESSION_ID", "value": "1" }
+  ]
+}
