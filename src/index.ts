@@ -23,6 +23,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use('/api/speakers', speakerRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/questions", questionRoutes);
 
 app.post("/api/admin/login", async (req, res) => {
   const { email, password } = req.body;
@@ -57,8 +58,6 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
-// app.use('/api/rooms', roomRoutes);
-app.use("/api/questions", questionRoutes);
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Backend EventSync is working !" });
 });
