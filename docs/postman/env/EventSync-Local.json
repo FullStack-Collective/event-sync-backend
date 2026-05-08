@@ -4,14 +4,8 @@
   "values": [
     {
       "key": "BASE_URL",
-      "value": "http://localhost:3000",
+      "value": "http://localhost:5000",
       "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "ADMIN_TOKEN",
-      "value": "",
-      "type": "secret",
       "enabled": true
     },
     {
@@ -27,7 +21,13 @@
       "enabled": true
     },
     {
-      "key": "EVENT_ID",
+      "key": "ADMIN_TOKEN",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "ROOM_ID",
       "value": "1",
       "type": "default",
       "enabled": true
@@ -39,7 +39,7 @@
       "enabled": true
     },
     {
-      "key": "ROOM_ID",
+      "key": "EVENT_ID",
       "value": "1",
       "type": "default",
       "enabled": true
