@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: EventSync API - Speakers
+  version: 1.0.0
+  description: Endpoints pour la gestion des intervenants et leurs assignations aux sessions.
+
+servers:
+  - url: http://localhost:5000
+    description: Serveur de développement local
+
+tags:
+  - name: Speakers
+    description: Opérations liées aux intervenants
+
+paths:
+  /api/speakers:
+    get:
+      summary: Liste tous les intervenants
+      tags:
+        - Speakers
+      responses:
+        '200':
+          description: Liste récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Speaker'
+        '500':
+          description: Erreur serveur
+
+    post:
+      summary: Créer un nouvel intervenant
+      description: Ajoute un intervenant à la base de données (Admin uniquement)
+      tags:
+        - Speakers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Ada Lovelace"
+                bio:
+                  type: string
+                  example: "Mathématicienne et pionnière de l'informatique."
+                photoUrl:
+                  type: string
+                twitter:
+                  type: string
+                linkedin:
+                  type: string
+      responses:
+        '201':
+          description: Intervenant créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Speaker'
+        '401':
+          description: Non authentifié
+
+  /api/speakers/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Récupérer un intervenant par ID
+      tags:
+        - Speakers
+      responses:
+        '200':
+          description: Détails de l'intervenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerDetail'
+        '404':
+          description: Intervenant non trouvé
+
+    put:
+      summary: Modifier un intervenant
+      tags:
+        - Speakers
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakerUpdate'
+      responses:
+        '200':
+          description: Intervenant mis à jour
+        '401':
+          description: Non authentifié
+        '404':
+          description: Intervenant non trouvé
+
+    delete:
+      summary: Supprimer un intervenant
+      tags:
+        - Speakers
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Supprimé avec succès
+        '401':
+          description: Non authentifié
+
+  /api/speakers/{id}/sessions:
+    get:
+      summary: Liste les sessions d'un intervenant
+      tags:
+        - Speakers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des sessions liées
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpeakerSessionRelation'
+
+  /api/sessions/{sessionId}/speakers/{speakerId}:
+    post:
+      summary: Ajouter un intervenant à une session
+      tags:
+        - Speakers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: speakerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Association créée
+        '409':
+          description: L'intervenant est déjà inscrit à cette session
+
+  /api/speakers/{speakerId}/sessions/{sessionId}:
+    delete:
+      summary: Retirer un intervenant d'une session
+      tags:
+        - Speakers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: speakerId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Association supprimée
+
+components:
+  schemas:
+    Speaker:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        twitter:
+          type: string
+          nullable: true
+        linkedin:
+          type: string
+          nullable: true
+
+    SpeakerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        bio:
+          type: string
+        photoUrl:
+          type: string
+
+    SpeakerDetail:
+      allOf:
+        - $ref: '#/components/schemas/Speaker'
+        - type: object
+          properties:
+            sessions:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpeakerSessionRelation'
+
+    SpeakerSessionRelation:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+        speakerId:
+          type: integer
+        session:
+          type: object
+          properties:
+            id:
+              type: integer
+            title:
+              type: string
+            startTime:
+              type: string
+              format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
