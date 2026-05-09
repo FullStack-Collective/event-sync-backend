@@ -5,7 +5,8 @@
     {
       "key": "BASE_URL",
       "value": "http://localhost:5000",
-      "type": "default",
+      "type":
+       "default",
       "enabled": true
     },
     {
