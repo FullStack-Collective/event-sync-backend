@@ -1,0 +1,515 @@
+openapi: 3.0.0
+info:
+  title: EventSync API - Events
+  version: 1.0.0
+  description: Events management endpoints - Consultation publique et gestion admin
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+tags:
+  - name: Events
+    description: Opérations sur les événements (public)
+  - name: Events Admin
+    description: Gestion des événements (authentification requise)
+
+paths:
+  /api/events:
+    get:
+      summary: Liste tous les événements
+      description: |
+        Récupère la liste des événements avec pagination, recherche, filtrage et tri.
+        Accessible publiquement sans authentification.
+      tags:
+        - Events
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Numéro de la page
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          description: Nombre d'éléments par page
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Recherche textuelle (titre, description, lieu)
+          example: "conférence"
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [upcoming, past, all]
+            default: all
+          description: Filtre par statut
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [startDate, title, createdAt]
+            default: startDate
+          description: Champ de tri
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+          description: Ordre de tri
+      responses:
+        '200':
+          description: Succès - Liste des événements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+        '400':
+          description: Paramètres invalides
+        '500':
+          description: Erreur serveur
+
+    post:
+      summary: Créer un événement
+      description: Crée un nouvel événement. Réservé aux administrateurs.
+      tags:
+        - Events Admin
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+      responses:
+        '201':
+          description: Événement créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: Données invalides (titre trop court, dates incorrectes)
+        '401':
+          description: Non authentifié
+        '409':
+          description: Conflit de dates avec un autre événement
+
+  /api/events/upcoming:
+    get:
+      summary: Événements à venir
+      description: Récupère les prochains événements à venir
+      tags:
+        - Events
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+            minimum: 1
+            maximum: 50
+          description: Nombre d'événements à retourner
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                  count:
+                    type: integer
+        '500':
+          description: Erreur serveur
+
+  /api/events/{id}:
+    get:
+      summary: Détail d'un événement
+      description: Récupère toutes les informations d'un événement spécifique (sessions, intervenants, questions)
+      tags:
+        - Events
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de l'événement
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDetailResponse'
+        '404':
+          description: Événement non trouvé
+
+    put:
+      summary: Modifier un événement
+      description: Met à jour un événement existant. Réservé aux administrateurs.
+      tags:
+        - Events Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'
+      responses:
+        '200':
+          description: Événement modifié avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: Données invalides
+        '401':
+          description: Non authentifié
+        '404':
+          description: Événement non trouvé
+
+    delete:
+      summary: Supprimer un événement
+      description: Supprime un événement et toutes ses sessions associées (cascade). Réservé aux administrateurs.
+      tags:
+        - Events Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Supprimé avec succès (pas de contenu)
+        '401':
+          description: Non authentifié
+        '404':
+          description: Événement non trouvé
+
+  /api/events/{id}/live:
+    get:
+      summary: Session en cours
+      description: Récupère la session actuellement en direct dans l'événement
+      tags:
+        - Events
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de l'événement
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    oneOf:
+                      - $ref: '#/components/schemas/LiveSession'
+                      - type: 'null'
+                  isLive:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Événement non trouvé
+
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "DevConf 2026"
+        description:
+          type: string
+          nullable: true
+          example: "La plus grande conférence des développeurs"
+        startDate:
+          type: string
+          format: date-time
+          example: "2026-06-15T09:00:00Z"
+        endDate:
+          type: string
+          format: date-time
+          example: "2026-06-17T18:00:00Z"
+        location:
+          type: string
+          nullable: true
+          example: "Paris Expo, Porte de Versailles"
+        bannerUrl:
+          type: string
+          nullable: true
+          example: "https://example.com/banner.jpg"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isLive:
+          type: boolean
+          description: "L'événement est-il en cours ?"
+        isUpcoming:
+          type: boolean
+          description: "L'événement est-il à venir ?"
+        isPast:
+          type: boolean
+          description: "L'événement est-il passé ?"
+        totalSessions:
+          type: integer
+          description: "Nombre total de sessions"
+        totalQuestions:
+          type: integer
+          description: "Nombre total de questions"
+
+    EventListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+            totalPages:
+              type: integer
+            hasNextPage:
+              type: boolean
+            hasPrevPage:
+              type: boolean
+
+    EventDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Event'
+            - type: object
+              properties:
+                sessions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SessionBrief'
+                metadata:
+                  type: object
+                  properties:
+                    isLive:
+                      type: boolean
+                    isUpcoming:
+                      type: boolean
+                    isPast:
+                      type: boolean
+                    totalDuration:
+                      type: integer
+                      description: "Durée totale en minutes"
+
+    SessionBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        isLive:
+          type: boolean
+        questionsCount:
+          type: integer
+        totalUpvotes:
+          type: integer
+        room:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            capacity:
+              type: integer
+        speakers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              photoUrl:
+                type: string
+              bio:
+                type: string
+
+    CreateEventRequest:
+      type: object
+      required:
+        - title
+        - startDate
+        - endDate
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 200
+          example: "DevConf 2026"
+        description:
+          type: string
+          maxLength: 2000
+          example: "Conférence des développeurs"
+        startDate:
+          type: string
+          format: date-time
+          example: "2026-06-15T09:00:00Z"
+        endDate:
+          type: string
+          format: date-time
+          example: "2026-06-17T18:00:00Z"
+        location:
+          type: string
+          maxLength: 500
+          example: "Paris, France"
+
+    UpdateEventRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        location:
+          type: string
+          maxLength: 500
+
+    EventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Event'
+        message:
+          type: string
+          example: "Événement créé avec succès"
+
+    LiveSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        room:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        speakers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              content:
+                type: string
+              authorName:
+                type: string
+                nullable: true
+              upvotes:
+                type: integer
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Token JWT obtenu via /api/auth/login"
