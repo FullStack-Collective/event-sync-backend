@@ -288,7 +288,7 @@ npm run clean            # Delete node_modules and package-lock.json
 
 | Developer | Email                   |
 | --------- | ----------------------- |
-| [Valisoa](https://github.com/valisoa01)  | `not avalaible yet`   |
+| [Valisoa](https://github.com/valisoa01)  | `valisoatolotriniain@gmail.com`   |
 | [David](https://github.com/DavFilsDev)   | `miharisoadavidfils@gmail.com`     |
 | [Zinedis](https://github.com/Safid849)  | `nantenainabakari@gmail.com`   |
 | [Herinjaka](https://github.com/24194Njaka) | `not avalaible yet` |
