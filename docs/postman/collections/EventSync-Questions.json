@@ -1,0 +1,78 @@
+{
+  "info": {
+    "name": "EventSync - Questions API",
+    "_postman_id": "a1b2c3d4-event-sync-questions",
+    "description": "Collection pour tester tous les endpoints Questions",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/health"
+      }
+    },
+    {
+      "name": "GET Questions by Session (LIVE)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/sessions/1/questions"
+      }
+    },
+    {
+      "name": "POST Create Question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"What is EventSync?\",\n  \"sessionId\": 1,\n  \"authorName\": \"John\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST Create Question (Anonymous)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"Anonymous question test\",\n  \"sessionId\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "PUT Upvote Question",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/api/questions/1/upvote"
+      }
+    },
+    {
+      "name": "DELETE Question",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/questions/1"
+      }
+    }
+  ]
+}
