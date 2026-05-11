@@ -1,8 +1,7 @@
 {
   "info": {
-    "name": "EventSync - Questions API",
-    "_postman_id": "a1b2c3d4-event-sync-questions",
-    "description": "Collection pour tester tous les endpoints Questions",
+    "name": "EventSync Questions API",
+    "_postman_id": "eventsync-questions",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -12,29 +11,21 @@
     }
   ],
   "item": [
+
     {
-      "name": "Health Check",
+      "name": "GET Questions (LIVE)",
       "request": {
         "method": "GET",
-        "url": "{{base_url}}/api/health"
+        "url": "{{base_url}}/api/questions/sessions/1/questions"
       }
     },
-    {
-      "name": "GET Questions by Session (LIVE)",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/api/sessions/1/questions"
-      }
-    },
+
     {
       "name": "POST Create Question",
       "request": {
         "method": "POST",
         "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
+          { "key": "Content-Type", "value": "application/json" }
         ],
         "url": "{{base_url}}/api/questions",
         "body": {
@@ -43,30 +34,30 @@
         }
       }
     },
+
     {
-      "name": "POST Create Question (Anonymous)",
+      "name": "POST Anonymous Question",
       "request": {
         "method": "POST",
         "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
+          { "key": "Content-Type", "value": "application/json" }
         ],
         "url": "{{base_url}}/api/questions",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"content\": \"Anonymous question test\",\n  \"sessionId\": 1\n}"
+          "raw": "{\n  \"content\": \"Anonymous question\",\n  \"sessionId\": 1\n}"
         }
       }
     },
+
     {
-      "name": "PUT Upvote Question",
+      "name": "PUT Upvote",
       "request": {
         "method": "PUT",
         "url": "{{base_url}}/api/questions/1/upvote"
       }
     },
+
     {
       "name": "DELETE Question",
       "request": {
@@ -74,5 +65,6 @@
         "url": "{{base_url}}/api/questions/1"
       }
     }
+
   ]
 }
