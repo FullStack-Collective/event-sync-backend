@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: EventSync API - Questions
+  version: 1.0.0
+  description: API for managing questions during live sessions
+
+paths:
+
+  /api/sessions/{sessionId}/questions:
+    get:
+      summary: Get questions for a session (LIVE only)
+      description: Returns questions sorted by upvotes, only if the session is live
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Question"
+
+        "400":
+          description: Invalid sessionId
+
+        "403":
+          description: Session is not live
+          content:
+            application/json:
+              example:
+                message: Questions are only available during live session
+
+        "404":
+          description: Session not found
+
+        "500":
+          description: Internal server error
+
+  /api/questions:
+    post:
+      summary: Create a new question (LIVE only)
+      description: Create a question during a live session. Author name is optional (anonymous allowed)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+                - sessionId
+              properties:
+                content:
+                  type: string
+                  example: What is EventSync?
+                sessionId:
+                  type: integer
+                  example: 1
+                authorName:
+                  type: string
+                  example: John
+      responses:
+        "201":
+          description: Question created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Question"
+
+        "400":
+          description: Missing content or sessionId
+
+        "403":
+          description: Session not live
+
+        "404":
+          description: Session not found
+
+        "500":
+          description: Internal server error
+
+  /api/questions/{id}/upvote:
+    put:
+      summary: Upvote a question
+      description: Increment upvote count for a question
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Upvote added
+          content:
+            application/json:
+              example:
+                message: Upvote added
+                data:
+                  id: 1
+                  upvotes: 10
+
+        "400":
+          description: Invalid question id
+
+        "404":
+          description: Question not found
+
+        "500":
+          description: Internal server error
+
+  /api/questions/{id}:
+    delete:
+      summary: Delete a question (Admin)
+      description: Delete a question by ID (admin only in future)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Question deleted
+          content:
+            application/json:
+              example:
+                message: Question deleted successfully
+
+        "400":
+          description: Invalid question id
+
+        "404":
+          description: Question not found
+
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: What is EventSync?
+        sessionId:
+          type: integer
+          example: 1
+        authorName:
+          type: string
+          nullable: true
+          example: John
+        upvotes:
+          type: integer
+          example: 5
+        createdAt:
+          type: string
+          format: date-time
