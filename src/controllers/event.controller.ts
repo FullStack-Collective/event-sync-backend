@@ -37,7 +37,7 @@ export const eventController = {
     }
   },
 
-    getUpcoming: async (req: Request, res: Response) => {
+  getUpcoming: async (req: Request, res: Response) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
       const events = await eventService.findUpcoming(limit);
