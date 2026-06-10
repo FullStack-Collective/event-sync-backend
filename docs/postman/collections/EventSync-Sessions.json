@@ -1,0 +1,214 @@
+{
+  "info": {
+    "name": "EventSync - Sessions",
+    "description": "CRUD operations for sessions management with real-time status",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Routes",
+      "item": [
+        {
+          "name": "GET All Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions"]
+            }
+          }
+        },
+        {
+          "name": "GET Session by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions/{{SESSION_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions", "{{SESSION_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "GET Sessions by Event",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions/event/{{EVENT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions", "event", "{{EVENT_ID}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Routes",
+      "item": [
+        {
+          "name": "CREATE Session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.data && response.data.id) {",
+                  "    pm.environment.set('SESSION_ID', response.data.id);",
+                  "    console.log('✅ Session ID saved:', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Introduction to Next.js App Router\",\n  \"description\": \"Learn the new features of Next.js App Router\",\n  \"startTime\": \"2024-12-15T10:00:00Z\",\n  \"endTime\": \"2024-12-15T11:30:00Z\",\n  \"eventId\": 1,\n  \"roomId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions"]
+            }
+          }
+        },
+        {
+          "name": "UPDATE Session",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated: Advanced Next.js Patterns\",\n  \"description\": \"Deep dive into advanced patterns\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions/{{SESSION_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions", "{{SESSION_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Session",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions/{{SESSION_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions", "{{SESSION_ID}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Scenarios",
+      "item": [
+        {
+          "name": "Test Room Conflict (Should fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Conflicting Session\",\n  \"description\": \"This should fail due to room conflict\",\n  \"startTime\": \"2024-12-15T10:30:00Z\",\n  \"endTime\": \"2024-12-15T11:30:00Z\",\n  \"eventId\": 1,\n  \"roomId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions"]
+            }
+          }
+        },
+        {
+          "name": "Test Invalid Event ID (Should fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Invalid Event Test\",\n  \"startTime\": \"2024-12-15T10:00:00Z\",\n  \"endTime\": \"2024-12-15T11:00:00Z\",\n  \"eventId\": 999,\n  \"roomId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "ADMIN_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "SESSION_ID",
+      "value": "1"
+    },
+    {
+      "key": "EVENT_ID",
+      "value": "1"
+    },
+    {
+      "key": "ROOM_ID",
+      "value": "1"
+    }
+  ]
+}

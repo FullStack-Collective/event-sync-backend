@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: EventSync Questions API
+  version: 1.0.0
+
+paths:
+
+  /api/questions/sessions/{sessionId}/questions:
+    get:
+      summary: Get questions by session (LIVE only)
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Questions list
+        "400":
+          description: Invalid sessionId
+        "403":
+          description: Session not live
+        "404":
+          description: Session not found
+
+  /api/questions:
+    post:
+      summary: Create question (LIVE only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              content: What is EventSync?
+              sessionId: 1
+              authorName: John
+      responses:
+        "201":
+          description: Question created
+        "400":
+          description: Missing fields
+        "403":
+          description: Session not live
+        "404":
+          description: Session not found
+
+  /api/questions/{id}/upvote:
+    put:
+      summary: Upvote a question
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Upvote added
+        "400":
+          description: Invalid id
+        "404":
+          description: Question not found
+
+  /api/questions/{id}:
+    delete:
+      summary: Delete a question
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+        "400":
+          description: Invalid id
+        "404":
+          description: Question not found

@@ -1,0 +1,312 @@
+openapi: 3.0.0
+info:
+  title: EventSync API - Sessions
+  version: 1.0.0
+  description: Sessions management endpoints
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+paths:
+  /api/sessions:
+    get:
+      summary: Get all sessions
+      description: Retrieve a list of all sessions with their relations
+      tags:
+        - Sessions
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Session'
+                  total:
+                    type: integer
+        '500':
+          description: Server error
+
+    post:
+      summary: Create a session
+      description: Create a new session (Admin only)
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - startTime
+                - endTime
+                - eventId
+                - roomId
+              properties:
+                title:
+                  type: string
+                  example: "Workshop: Next.js"
+                description:
+                  type: string
+                  example: "Learn Next.js App Router"
+                startTime:
+                  type: string
+                  format: date-time
+                  example: "2024-12-01T10:00:00Z"
+                endTime:
+                  type: string
+                  format: date-time
+                  example: "2024-12-01T11:00:00Z"
+                eventId:
+                  type: integer
+                  example: 1
+                roomId:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Session'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '404':
+          description: Event or Room not found
+        '409':
+          description: Room already booked during this time slot
+
+  /api/sessions/{id}:
+    get:
+      summary: Get session by ID
+      description: Retrieve a single session with speakers and questions
+      tags:
+        - Sessions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SessionDetail'
+        '404':
+          description: Session not found
+
+    put:
+      summary: Update session
+      description: Update an existing session (Admin only)
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                startTime:
+                  type: string
+                  format: date-time
+                endTime:
+                  type: string
+                  format: date-time
+                roomId:
+                  type: integer
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Session'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Session not found
+        '409':
+          description: Room already booked during this time slot
+
+    delete:
+      summary: Delete session
+      description: Delete a session (Admin only)
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Session not found
+
+  /api/sessions/event/{eventId}:
+    get:
+      summary: Get sessions by event
+      description: Retrieve all sessions for a specific event
+      tags:
+        - Sessions
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Event ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Session'
+                  total:
+                    type: integer
+        '404':
+          description: Event not found
+
+components:
+  schemas:
+    Session:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        eventId:
+          type: integer
+        roomId:
+          type: integer
+        isLive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SessionDetail:
+      allOf:
+        - $ref: '#/components/schemas/Session'
+        - type: object
+          properties:
+            event:
+              type: object
+              properties:
+                id:
+                  type: integer
+                title:
+                  type: string
+                startDate:
+                  type: string
+                  format: date-time
+                endDate:
+                  type: string
+                  format: date-time
+            room:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                capacity:
+                  type: integer
+            speakers:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  photoUrl:
+                    type: string
+                  bio:
+                    type: string
+            questions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  content:
+                    type: string
+                  authorName:
+                    type: string
+                    nullable: true
+                  upvotes:
+                    type: integer
+                  createdAt:
+                    type: string
+                    format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "EventSync - Rooms",
+    "description": "CRUD operations for rooms management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Routes",
+      "item": [
+        {
+          "name": "GET All Rooms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/rooms",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "rooms"]
+            }
+          }
+        },
+        {
+          "name": "GET Room by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/rooms/{{ROOM_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "rooms", "{{ROOM_ID}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Routes",
+      "item": [
+        {
+          "name": "CREATE Room",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.data && response.data.id) {",
+                  "    pm.environment.set('ROOM_ID', response.data.id);",
+                  "    console.log('✅ Room ID saved:', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Conference Hall A\",\n  \"capacity\": 300\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/rooms",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "rooms"]
+            }
+          }
+        },
+        {
+          "name": "UPDATE Room",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capacity\": 400\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/rooms/{{ROOM_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "rooms", "{{ROOM_ID}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Room",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/rooms/{{ROOM_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "rooms", "{{ROOM_ID}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "ADMIN_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "ROOM_ID",
+      "value": "1"
+    }
+  ]
+}
