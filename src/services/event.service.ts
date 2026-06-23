@@ -1,6 +1,5 @@
 import { prisma } from '../utils/prisma';
 
-// Fonctions utilitaires simples sans dayjs
 const isEndDateAfterStart = (startDate: Date, endDate: Date): boolean => {
   return endDate > startDate;
 };
