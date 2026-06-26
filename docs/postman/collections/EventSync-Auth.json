@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "EventSync - Authentication",
+    "description": "Authentication endpoints for admin login, logout, and token verification",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Admin Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "if (response.success && response.data.token) {",
+              "    pm.environment.set('ADMIN_TOKEN', response.data.token);",
+              "    console.log('✅ Token saved:', response.data.token.substring(0, 50) + '...');",
+              "}",
+              "pm.test('Login successful', () => {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(response.success).to.be.true;",
+              "    pm.expect(response.data.token).to.be.a('string');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{ADMIN_EMAIL}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/login",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Verify Token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{ADMIN_TOKEN}}"
+          }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/verify",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "verify"]
+        }
+      }
+    },
+    {
+      "name": "Admin Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/logout",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "logout"]
+        }
+      }
+    },
+    {
+      "name": "Get All Rooms (Public)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/rooms",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "rooms"]
+        }
+      }
+    },
+    {
+      "name": "Get All Sessions (Public)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/sessions",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "sessions"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "ADMIN_EMAIL",
+      "value": "admin@eventsync.com"
+    },
+    {
+      "key": "ADMIN_PASSWORD",
+      "value": "admin123"
+    },
+    {
+      "key": "ADMIN_TOKEN",
+      "value": ""
+    }
+  ]
+}

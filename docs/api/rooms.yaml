@@ -1,0 +1,225 @@
+openapi: 3.0.0
+info:
+  title: EventSync API - Rooms
+  version: 1.0.0
+  description: Rooms management endpoints
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+paths:
+  /api/rooms:
+    get:
+      summary: Get all rooms
+      description: Retrieve a list of all rooms with their sessions
+      tags:
+        - Rooms
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+                  total:
+                    type: integer
+        '500':
+          description: Server error
+
+    post:
+      summary: Create a room
+      description: Create a new room (Admin only)
+      tags:
+        - Rooms
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Grand Hall"
+                capacity:
+                  type: integer
+                  example: 500
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Room'
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '409':
+          description: Room name already exists
+
+  /api/rooms/{id}:
+    get:
+      summary: Get room by ID
+      description: Retrieve a single room with its sessions
+      tags:
+        - Rooms
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Room ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/RoomDetail'
+        '404':
+          description: Room not found
+
+    put:
+      summary: Update room
+      description: Update an existing room (Admin only)
+      tags:
+        - Rooms
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                capacity:
+                  type: integer
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Room'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Room not found
+        '409':
+          description: Room name already exists
+
+    delete:
+      summary: Delete room
+      description: Delete a room (Admin only)
+      tags:
+        - Rooms
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Room not found
+
+components:
+  schemas:
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    
+    RoomDetail:
+      allOf:
+        - $ref: '#/components/schemas/Room'
+        - type: object
+          properties:
+            sessions:
+              type: array
+              items:
+                $ref: '#/components/schemas/SessionBrief'
+    
+    SessionBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        event:
+          type: object
+          properties:
+            id:
+              type: integer
+            title:
+              type: string
+        speakers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -2,20 +2,6 @@
 
 EventSync is a real-time event management platform that replaces static materials (PDF, paper programs) with a dynamic interface for seamless navigation and live interaction during events.
 
-## 📋 Table of Contents
-
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Quick Setup for Developers](#quick-setup-for-developers)
-- [Database Setup Guide](#database-setup-guide)
-- [Prisma Commands](#prisma-commands)
-- [Project Structure](#project-structure)
-- [API Endpoints](#api-endpoints)
-- [Available Scripts](#available-scripts)
-- [Environment Variables](#environment-variables)
-- [Team Workflow](#team-workflow)
-- [Troubleshooting](#troubleshooting)
-
 ## 🚀 Tech Stack
 
 - **Runtime**: Node.js
@@ -52,22 +38,6 @@ npm install
 
 ### Step 3: Set Up PostgreSQL Database
 
-**Option A: Using the provided SQL script (Recommended)**
-
-Run the SQL script to create the database and user:
-
-```bash
-# Connect to PostgreSQL as postgres user
-sudo -u postgres psql
-
-# Or on Windows (using psql)
-psql -U postgres
-
-# Then run the script
-\i docs/scripts.sql
-```
-
-**Option B: Manual Setup**
 
 ```sql
 CREATE USER eventsync_user WITH PASSWORD 'Eventsync2024!';
@@ -124,65 +94,6 @@ curl http://localhost:3000/api/health
 # { "status": "OK", "message": "Backend EventSync fonctionne !" }
 ```
 
-## 🗄️ Database Setup Guide
-
-### For New Developers: Complete Database Setup
-
-If you're setting up the project for the first time, here's everything you need to know:
-
-#### 1. **Ensure PostgreSQL is Running**
-
-```bash
-# On Linux (Ubuntu/Debian)
-sudo systemctl status postgresql
-sudo systemctl start postgresql
-
-# On macOS with Homebrew
-brew services start postgresql
-
-# On Windows
-# PostgreSQL should be running as a Windows service
-```
-
-#### 2. **Run the Database Setup Script**
-
-We've included a SQL script at `docs/scripts.sql` that will:
-
-- Create the `eventsync_user` user
-- Create the `eventsync` database
-- Set up all necessary permissions
-
-```bash
-# Connect to PostgreSQL and run the script
-psql -U postgres -f docs/scripts.sql
-
-# Or if you're already in psql:
-\i docs/scripts.sql
-```
-
-#### 3. **Verify Database Creation**
-
-```bash
-# List all databases
-psql -U postgres -c "\l"
-
-# Connect to the eventsync database
-psql -U eventsync_user -d eventsync -h localhost
-
-# You should see a successful connection
-```
-
-### What the SQL Script Does
-
-The `docs/scripts.sql` file:
-
-1. **Creates a dedicated user** `eventsync_user` with password `Eventsync2024!`
-2. **Creates the database** `eventsync` owned by this user
-3. **Grants all necessary privileges** for the user to work with the database
-4. **Sets up default privileges** so any new tables created will automatically be accessible
-
-This ensures that when you run `npx prisma db push`, Prisma can successfully create all the tables.
-
 ## 📚 Prisma Commands (Cheat Sheet for Developers)
 
 Here are all the Prisma commands you'll need:
@@ -203,25 +114,6 @@ Here are all the Prisma commands you'll need:
 | `npx prisma format` | Formats your Prisma schema file |
 | `npx prisma db pull` | Pulls existing database schema |
 | `npx prisma migrate dev` | Creates migrations (for production) |
-
-### Typical Workflow
-
-```bash
-# 1. After cloning the project
-npm install
-npx prisma generate
-
-# 2. After modifying schema.prisma
-npx prisma db push
-npx prisma generate
-
-# 3. To view your data
-npx prisma studio
-
-# 4. If something goes wrong
-npx prisma generate --no-engine
-npx prisma db push --force-reset
-```
 
 ## 📁 Project Structure
 
@@ -317,180 +209,86 @@ npm run prisma:studio    # Open Prisma Studio GUI
 # Utility
 npm run clean            # Delete node_modules and package-lock.json
 ```
+## 📋 Task Distribution by Developer
 
-## 🔐 Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Database connection (required)
-DATABASE_URL="postgresql://eventsync_user:Eventsync2024!@localhost:5432/eventsync?schema=public"
-
-# Server configuration (optional, defaults to 3000)
-PORT=3000
-
-# Admin authentication (required)
-ADMIN_EMAIL="admin@eventsync.com"
-JWT_SECRET="your-super-secret-jwt-key-at-least-32-characters-long"
-
-# Node environment (optional)
-NODE_ENV="development"  # or "production"
-```
-
-## 👥 Team Workflow
-
-### First Time Setup for Each Developer
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/your-org/eventsync-backend.git
-cd eventsync-backend
-
-# 2. Run database setup (if not already done)
-psql -U postgres -f docs/scripts.sql
-
-# 3. Install dependencies
-npm install
-
-# 4. Setup environment
-cp .env.example .env
-# Edit .env if needed (usually DATABASE_URL is already correct)
-
-# 5. Generate Prisma Client and push schema
-npx prisma generate
-npx prisma db push
-
-# 6. Start developing!
-npm run dev
-```
-
-### Daily Git Workflow
-
-```bash
-# 1. Always start by getting latest changes
-git checkout main
-git pull origin main
-
-# 2. Create your feature branch
-git checkout -b feature/your-task-name
-
-# 3. Make your changes and commit
-git add .
-git commit -m "feat: description of your changes"
-
-# 4. Push your branch
-git push origin feature/your-task-name
-
-# 5. Create a Pull Request on GitHub
-# 6. After PR is merged, delete your branch
-```
-
-### Avoiding Conflicts
-
-Each developer should work on their own entity:
-
-| Developer | Entity | Files to modify |
-|-----------|--------|-----------------|
-| Dev A | Events | `event.controller.ts`, `event.service.ts`, `event.routes.ts` |
-| Dev B | Sessions & Rooms | `session.*`, `room.*` files |
-| Dev C | Speakers | `speaker.*` files |
-| Dev D | Questions | `question.*` files |
-
-**Files that multiple people might modify:**
-- `src/index.ts` (when adding routes)
-- `prisma/schema.prisma` (when adding/updating models)
-
-**Solution:** Communicate on Slack/Discord before editing these files.
-
-## 🔧 Troubleshooting
-
-### Common Issues and Solutions
-
-#### 1. **Prisma generate error: "Cannot find module"**
-
-```bash
-# Solution
-rm -rf node_modules package-lock.json
-npm install
-npx prisma generate
-```
-
-#### 2. **Database connection error: "Can't reach database server"**
-
-```bash
-# Check if PostgreSQL is running
-sudo systemctl status postgresql  # Linux
-brew services list                 # macOS
-
-# Verify the connection string in .env
-cat .env | grep DATABASE_URL
-
-# Test PostgreSQL connection
-psql -U eventsync_user -d eventsync -h localhost
-```
-
-#### 3. **Permission denied when creating database**
-
-```bash
-# Connect as postgres superuser
-sudo -u postgres psql
-
-# Then run the script manually
-\i docs/scripts.sql
-```
-
-#### 4. **Port 3000 already in use**
-
-```bash
-# Change port in .env
-PORT=3001
-
-# Or kill process using port 3000
-lsof -i :3000  # Find PID
-kill -9 [PID]  # Kill process
-```
-
-#### 5. **Prisma client not generated after schema changes**
-
-```bash
-# Regenerate client
-npx prisma generate
-npx prisma db push
-```
-
-### Getting Help
-
-If you encounter issues:
-
-1. Check the [Troubleshooting](#troubleshooting) section above
-2. Look for existing issues on GitHub
-3. Ask in the team Slack/Discord channel
-4. Check Prisma's documentation: https://www.prisma.io/docs
-
-## 📝 Additional Notes
-
-- **Only admin authentication** is implemented (no user registration)
-- All GET endpoints are public
-- POST/PUT/DELETE endpoints require JWT token in Authorization header
-- The project uses TypeScript - make sure your IDE has TypeScript support
-
-## 🎯 Next Steps After Setup
-
-Once the backend is running, you can:
-
-1. Test the API using Postman or curl
-2. Start implementing your assigned entity (Event, Session, Speaker, or Question)
-3. Create your feature branch and begin coding
+| Developer     | Entities                   | Number of Endpoints |
+| ------------- | -------------------------- | ------------------- |
+| [Valisoa](https://github.com/valisoa01)  | Events                     | 5                   |
+| [David](https://github.com/DavFilsDev)    | Sessions + Rooms           | 10                  |
+| [Zinedis](https://github.com/Safid849)   | Speakers + SessionSpeakers | 8                   |
+| [Herinjaka](https://github.com/24194Njaka) | Questions + Live Logic     | 4                   |
 
 ---
 
-**Happy coding! 🚀**
-```
+## 🎯 Valisoa: Events
 
-This README includes everything your team needs:
-- Complete setup instructions
-- Database setup using your `scripts.sql` file
-- All Prisma commands with explanations
-- Team workflow guidelines
-- Troubleshooting for common issues
-- Clear structure for 4 developers working in parallel
+###  Implemented endpoints
+
+| Method | Endpoint          | Description                      | Auth   |
+| ------ | ----------------- | -------------------------------- | ------ |
+| GET    | `/api/events`     | List all events                  | Public |
+| GET    | `/api/events/:id` | Event details + related sessions | Public |
+| POST   | `/api/events`     | Create an event                  | Admin  |
+| PUT    | `/api/events/:id` | Update an event                  | Admin  |
+| DELETE | `/api/events/:id` | Delete an event (cascade)        | Admin  |
+
+
+## 🎯 David: Sessions + Rooms
+
+### Implemented endpoints (Sessions)
+
+| Method | Endpoint                        | Description                            | Auth   |
+| ------ | ------------------------------- | -------------------------------------- | ------ |
+| GET    | `/api/sessions`                 | List all sessions                      | Public |
+| GET    | `/api/sessions/:id`             | Session details + speakers + questions | Public |
+| GET    | `/api/events/:eventId/sessions` | Sessions for a specific event          | Public |
+| POST   | `/api/sessions`                 | Create a session                       | Admin  |
+| PUT    | `/api/sessions/:id`             | Update a session                       | Admin  |
+| DELETE | `/api/sessions/:id`             | Delete a session                       | Admin  |
+
+### Implemented endpoints (Rooms)
+
+| Method | Endpoint         | Description    | Auth   |
+| ------ | ---------------- | -------------- | ------ |
+| GET    | `/api/rooms`     | List all rooms | Public |
+| GET    | `/api/rooms/:id` | Room details   | Public |
+| POST   | `/api/rooms`     | Create a room  | Admin  |
+| PUT    | `/api/rooms/:id` | Update a room  | Admin  |
+| DELETE | `/api/rooms/:id` | Delete a room  | Admin  |
+
+
+## 🎯 Zinedis: Speakers + SessionSpeakers
+
+### Implemented endpoints (Sessions)
+
+| Method | Endpoint                                       | Description                        | Auth   |
+| ------ | ---------------------------------------------- | ---------------------------------- | ------ |
+| GET    | `/api/speakers`                                | List all speakers                  | Public |
+| GET    | `/api/speakers/:id`                            | Speaker details + related sessions | Public |
+| POST   | `/api/speakers`                                | Create a speaker                   | Admin  |
+| PUT    | `/api/speakers/:id`                            | Update a speaker                   | Admin  |
+| DELETE | `/api/speakers/:id`                            | Delete a speaker                   | Admin  |
+| POST   | `/api/sessions/:sessionId/speakers/:speakerId` | Add a speaker to a session         | Admin  |
+| DELETE | `/api/sessions/:sessionId/speakers/:speakerId` | Remove a speaker from a session    | Admin  |
+
+
+## 🎯 Herinjaka: Questions + Live Logic
+
+### Implemented endpoints (Sessions)
+
+| Method | Endpoint                             | Description                                      | Auth   |
+| ------ | ------------------------------------ | ------------------------------------------------ | ------ |
+| GET    | `/api/sessions/:sessionId/questions` | List questions for a session (sorted by upvotes) | Public |
+| POST   | `/api/questions`                     | Ask a question (anonymous allowed)               | Public |
+| PUT    | `/api/questions/:id/upvote`          | Upvote a question                                | Public |
+| DELETE | `/api/questions/:id`                 | Delete a question                                | Admin  |
+
+
+## 👥 Contributors
+
+| Developer | Email                   |
+| --------- | ----------------------- |
+| [Valisoa](https://github.com/valisoa01)  | `valisoatolotriniain@gmail.com`   |
+| [David](https://github.com/DavFilsDev)   | `miharisoadavidfils@gmail.com`     |
+| [Zinedis](https://github.com/Safid849)  | `nantenainabakari@gmail.com`   |
+| [Herinjaka](https://github.com/24194Njaka) | `not avalaible yet` |
