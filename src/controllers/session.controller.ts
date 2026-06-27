@@ -4,53 +4,47 @@ import { sessionService } from '../services/session.service';
 export const sessionController = {
   getAll: async (req: Request, res: Response) => {
     const sessions = await sessionService.findAll();
-    res.json({
-      data: sessions,
-      total: sessions.length
-    });
+    res.json({ data: sessions, total: sessions.length });
   },
-  
+
   getOne: async (req: Request, res: Response) => {
-    const id = req.params.id;
-    if (id !== 'string') {
-        throw new Error('Invalid ID');
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid ID' });
     }
-    const session = await sessionService.findById(parseInt(id));
+    const session = await sessionService.findById(id);
     res.json({ data: session });
   },
-  
+
   getByEvent: async (req: Request, res: Response) => {
-    const eventId = req.params.eventId;
-    if (eventId !== 'string') {
-        throw new Error('Invalid Event ID');
+    const eventId = parseInt(req.params.eventId as string);
+    if (isNaN(eventId)) {
+      return res.status(400).json({ error: 'Invalid Event ID' });
     }
-    const sessions = await sessionService.findByEvent(parseInt(eventId));
-    res.json({
-      data: sessions,
-      total: sessions.length
-    });
+    const sessions = await sessionService.findByEvent(eventId);
+    res.json({ data: sessions, total: sessions.length });
   },
-  
+
   create: async (req: Request, res: Response) => {
     const session = await sessionService.create(req.body);
     res.status(201).json({ data: session });
   },
-  
+
   update: async (req: Request, res: Response) => {
-    const id = req.params.id;
-    if (id !== 'string') {
-        throw new Error('Invalid ID');
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid ID' });
     }
-    const session = await sessionService.update(parseInt(id), req.body);
+    const session = await sessionService.update(id, req.body);
     res.json({ data: session });
   },
-  
+
   delete: async (req: Request, res: Response) => {
-    const id = req.params.id;
-    if (id !== 'string') {
-        throw new Error('Invalid ID');
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid ID' });
     }
-    await sessionService.delete(parseInt(id));
+    await sessionService.delete(id);
     res.status(204).send();
   }
 };
