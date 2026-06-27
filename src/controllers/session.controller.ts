@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { sessionService } from '../services/session.service';
+import { Request, Response } from "express";
+import { sessionService } from "../services/session.service";
 
 export const sessionController = {
   getAll: async (req: Request, res: Response) => {
@@ -26,8 +26,14 @@ export const sessionController = {
   },
 
   create: async (req: Request, res: Response) => {
-    const session = await sessionService.create(req.body);
-    res.status(201).json({ data: session });
+    try {
+      const session = await sessionService.create(req.body);
+
+      res.status(201).json({ data: session });
+    } catch (error) {
+      console.error("Error create session:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   },
 
   update: async (req: Request, res: Response) => {
