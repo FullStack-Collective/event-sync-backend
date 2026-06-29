@@ -12,6 +12,6 @@ router.post('/', authMiddleware, SpeakerController.createSpeaker);
 router.put('/:id', authMiddleware, SpeakerController.updateSpeaker);
 router.delete('/:id', authMiddleware, SpeakerController.deleteSpeaker);
 router.delete('/:speakerId/sessions/:sessionId', authMiddleware, SpeakerController.removeSessionFromSpeaker);
-
+router.post('/:speakerId/sessions/:sessionId', authMiddleware, SpeakerController.addSessionToSpeaker);
 
 export default router;
