@@ -102,4 +102,26 @@ export class SpeakerService {
             },
         });
     }
+
+
+    static async getByEventId(eventId: number): Promise<Speaker[]> {
+        return await prisma.speaker.findMany({
+            where: {
+                sessions: {
+                    some: {
+                        session: {
+                            eventId: eventId
+                        }
+                    }
+                }
+            },
+            include: {
+                sessions: {
+                    include: {
+                        session: true,
+                    },
+                },
+            },
+        });
+    }
 }
